@@ -32,12 +32,18 @@ export default function Main(){
         let results: any[] = [];
         let promises: Promise<void>[] = [];
 
-        excelRows.map((row) => {
-            const processRow = createAPI(row, function(res){
-                results.push(res.data)
-            })
+        // console.log(excelRows)
+        // return;
 
-            promises.push(processRow)
+        excelRows.map((row) => {
+
+            if(row && row['__rowNum__'] > 4){
+                const processRow = createAPI(row, function(res){
+                    results.push(res.data)
+                })
+                promises.push(processRow)
+            }
+            
         })
 
         Promise.all(promises).then((res) => {
@@ -50,7 +56,7 @@ export default function Main(){
         return axios.post("https://me-qr.com/api/qr/create/", {
             "token": process.env.REACT_APP_MEQR_API_KEY,
             "qrType": 1,
-            "title": row.Title,
+            "title": row.__EMPTY_1,
             "service": "api",
             "format": "json",
             "qrOptions": {
@@ -68,7 +74,7 @@ export default function Main(){
               "logotypeMargin": 5
             },
             "qrFieldsData": {
-              "link": row.URL
+              "link": row.__EMPTY_2
             }
         })
         .then((response) => {
